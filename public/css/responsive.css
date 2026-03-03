@@ -1,0 +1,418 @@
+/* Mobile Responsive Design */
+
+/* Tablet Devices (768px and below) */
+@media (max-width: 768px) {
+  .navbar .container {
+    padding: 0 10px;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .nav-items {
+    gap: 10px;
+  }
+
+  .user-id {
+    display: none;
+  }
+
+  .auth-container {
+    padding: 30px 20px;
+    max-width: 90vw;
+  }
+
+  .auth-container h2 {
+    font-size: 24px;
+  }
+
+  .remote-content {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    border-left: none;
+    border-top: 1px solid var(--border-color);
+    max-height: 200px;
+    flex-direction: row;
+    gap: 5px;
+    padding: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .panel {
+    flex: 0 0 auto;
+    min-width: 200px;
+    max-height: calc(200px - 10px);
+  }
+
+  .chat-messages {
+    height: 100px;
+  }
+
+  .control-buttons {
+    justify-content: center;
+  }
+
+  .btn {
+    font-size: 13px;
+    padding: 8px 16px;
+  }
+
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .settings-content {
+    padding: 20px;
+  }
+
+  .id-display {
+    flex-direction: column;
+  }
+
+  .input-group {
+    flex-direction: column;
+  }
+
+  .request-actions {
+    flex-direction: column;
+  }
+}
+
+/* Small Tablets & Large Phones (480px - 768px) */
+@media (max-width: 480px) {
+  .navbar {
+    height: 50px;
+  }
+
+  .main-container {
+    height: calc(100vh - 50px);
+  }
+
+  .logo {
+    font-size: 16px;
+    letter-spacing: 1px;
+  }
+
+  .status-indicator {
+    padding: 2px 8px;
+    font-size: 10px;
+  }
+
+  .auth-container {
+    padding: 20px 15px;
+    border-radius: 8px;
+  }
+
+  .auth-container h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  .auth-container > p {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .auth-section h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .auth-section {
+    margin-bottom: 15px;
+  }
+
+  .divider {
+    margin: 15px 0;
+  }
+
+  .id-input {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .input-group input {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .btn {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-success,
+  .btn-danger {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .id-display .btn {
+    width: auto;
+  }
+
+  .request-container {
+    padding: 20px 15px;
+    max-width: 90vw;
+  }
+
+  .request-content h2 {
+    font-size: 18px;
+  }
+
+  #request-from-user {
+    font-size: 14px;
+  }
+
+  .control-buttons {
+    gap: 5px;
+  }
+
+  .btn-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  .sidebar {
+    padding: 8px;
+    gap: 3px;
+  }
+
+  .panel {
+    padding: 10px;
+    min-width: 150px;
+  }
+
+  .panel h3 {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .stat-item {
+    font-size: 11px;
+    padding: 5px 0;
+  }
+
+  .chat-messages {
+    height: 80px;
+  }
+
+  .chat-message {
+    font-size: 12px;
+    padding: 5px;
+    margin-bottom: 5px;
+  }
+
+  .chat-message-name {
+    font-size: 11px;
+  }
+
+  .chat-input {
+    gap: 5px;
+  }
+
+  .chat-input input {
+    padding: 6px;
+    font-size: 12px;
+  }
+
+  .settings-container {
+    max-height: 95vh;
+    max-width: 95vw;
+    border-radius: 4px;
+  }
+
+  .settings-content {
+    padding: 20px;
+  }
+
+  .settings-content h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+
+  .settings-section {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+  }
+
+  .settings-section h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .setting-item {
+    margin-bottom: 10px;
+  }
+
+  .setting-item label {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .setting-item input[type="text"],
+  .setting-item input[type="number"],
+  .setting-item textarea,
+  .setting-item select {
+    padding: 6px;
+    font-size: 12px;
+  }
+
+  .setting-item textarea {
+    height: 80px;
+  }
+
+  .notification {
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    max-width: none;
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+}
+
+/* Extra Small Phones (< 360px) */
+@media (max-width: 360px) {
+  .navbar {
+    height: 45px;
+  }
+
+  .main-container {
+    height: calc(100vh - 45px);
+  }
+
+  .logo {
+    font-size: 14px;
+  }
+
+  .auth-container {
+    padding: 15px 10px;
+  }
+
+  .auth-container h2 {
+    font-size: 18px;
+  }
+
+  .btn {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  .btn-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+
+  .control-panel {
+    padding: 10px;
+  }
+
+  .control-buttons {
+    gap: 3px;
+  }
+
+  .settings-content {
+    padding: 15px;
+  }
+
+  .id-display {
+    gap: 5px;
+  }
+}
+
+/* Landscape Orientation */
+@media (max-height: 500px) and (orientation: landscape) {
+  .navbar {
+    height: 45px;
+  }
+
+  .main-container {
+    height: calc(100vh - 45px);
+  }
+
+  .auth-container {
+    padding: 20px;
+  }
+
+  .auth-section {
+    margin-bottom: 10px;
+  }
+
+  .btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .sidebar {
+    max-height: 150px;
+  }
+
+  .control-panel {
+    padding: 10px;
+  }
+
+  .control-buttons {
+    gap: 5px;
+  }
+
+  .btn-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .btn-icon {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .chat-input input,
+  .setting-item input,
+  .setting-item select,
+  .setting-item textarea {
+    font-size: 16px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .navbar,
+  .control-panel,
+  .sidebar,
+  .notification {
+    display: none !important;
+  }
+
+  .remote-video,
+  .remote-canvas {
+    max-width: 100%;
+  }
+}

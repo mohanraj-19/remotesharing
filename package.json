@@ -1,0 +1,29 @@
+{
+  "name": "any-disk",
+  "version": "1.0.0",
+  "description": "A full-featured remote desktop web application like AnyDesk",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js",
+    "generate-certs": "node server/utils/sslCerts.js"
+  },
+  "keywords": [
+    "remote-desktop",
+    "webrtc",
+    "screen-sharing",
+    "remote-control"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.5.4",
+    "dotenv": "^16.0.3",
+    "uuid": "^9.0.0",
+    "socket.io-client": "^4.5.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

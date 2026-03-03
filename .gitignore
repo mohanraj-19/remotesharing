@@ -1,0 +1,16 @@
+node_modules/
+*.log
+logs/
+certs/
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+*.crt
+.vscode/
+.idea/
+dist/
+build/

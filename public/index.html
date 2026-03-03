@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Any Disk - Remote Desktop</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">Any Disk</h1>
+            <div class="nav-items">
+                <span id="status-indicator" class="status-indicator offline">Offline</span>
+                <span id="user-id-display" class="user-id">ID: -</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container main-container">
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Home/Auth Screen -->
+            <div id="auth-screen" class="screen active">
+                <div class="auth-container">
+                    <h2>Welcome to Any Disk</h2>
+                    <p>Remote desktop sharing made easy</p>
+
+                    <div class="auth-section">
+                        <h3>Your ID</h3>
+                        <div class="id-display">
+                            <input type="text" id="my-id" class="id-input" readonly>
+                            <button class="btn btn-primary" onclick="copyToClipboard('my-id')">Copy</button>
+                            <button class="btn btn-secondary" onclick="generateNewID()">Generate New</button>
+                        </div>
+                    </div>
+
+                    <div class="divider">OR</div>
+
+                    <div class="auth-section">
+                        <h3>Connect to Someone</h3>
+                        <div class="input-group">
+                            <input type="text" id="connect-id" placeholder="Enter their ID (e.g., ABCD-EFGH-IJKL)" maxlength="14">
+                            <button class="btn btn-primary" onclick="connectToUser()">Connect</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-link">
+                        <button class="btn btn-text" onclick="toggleSettings()">⚙️ Settings</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connection Request Screen -->
+            <div id="request-screen" class="screen">
+                <div class="request-container">
+                    <div class="request-content">
+                        <h2>Connection Request</h2>
+                        <p id="request-from-user">User is requesting to connect</p>
+                        <div class="request-actions">
+                            <button class="btn btn-success" onclick="acceptConnection()">✓ Accept</button>
+                            <button class="btn btn-danger" onclick="rejectConnection()">✗ Reject</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Remote Desktop Screen -->
+            <div id="remote-screen" class="screen">
+                <div class="remote-container">
+                    <div class="remote-content">
+                        <!-- Remote Desktop Display -->
+                        <div class="desktop-view">
+                            <div class="video-container">
+                                <video id="remote-video" class="remote-video" autoplay playsinline></video>
+                                <canvas id="remote-canvas" class="remote-canvas" style="display: none;"></canvas>
+                                <div id="screen-loading" class="loading-indicator">Waiting for screen share...</div>
+                            </div>
+
+                            <!-- Control Panel -->
+                            <div class="control-panel">
+                                <div class="control-buttons">
+                                    <button class="btn btn-icon" id="toggle-audio" title="Toggle Audio">🔇</button>
+                                    <button class="btn btn-icon" id="toggle-keyboard" title="Toggle Keyboard" onclick="toggleKeyboardControl()">⌨️</button>
+                                    <button class="btn btn-icon" id="toggle-mouse" title="Toggle Mouse" onclick="toggleMouseControl()">🖱️</button>
+                                    <button class="btn btn-icon" id="file-transfer" title="Transfer File" onclick="openFileTransfer()">📁</button>
+                                    <button class="btn btn-icon" id="toggle-chat" title="Chat" onclick="toggleChat()">💬</button>
+                                    <button class="btn btn-danger" onclick="endConnection()">End Connection</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="sidebar">
+                            <!-- Stats -->
+                            <div class="panel">
+                                <h3>Connection Stats</h3>
+                                <div class="stat-item">
+                                    <span>Connected to:</span>
+                                    <span id="connected-to">-</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Connection Time:</span>
+                                    <span id="connection-time">00:00</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Bitrate:</span>
+                                    <span id="bitrate">0 kbps</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Latency:</span>
+                                    <span id="latency">0 ms</span>
+                                </div>
+                            </div>
+
+                            <!-- Chat Panel -->
+                            <div id="chat-panel" class="panel" style="display: none;">
+                                <h3>Chat</h3>
+                                <div id="chat-messages" class="chat-messages"></div>
+                                <div class="chat-input">
+                                    <input type="text" id="chat-input" placeholder="Type message..." maxlength="500">
+                                    <button class="btn btn-small" onclick="sendChatMessage()">Send</button>
+                                </div>
+                            </div>
+
+                            <!-- File Transfer Panel -->
+                            <div id="file-panel" class="panel" style="display: none;">
+                                <h3>File Transfer</h3>
+                                <div id="file-input-container" class="file-input">
+                                    <input type="file" id="file-input" multiple>
+                                    <button class="btn btn-primary" onclick="selectFile()">Choose File</button>
+                                </div>
+                                <div id="file-progress" class="file-progress" style="display: none;">
+                                    <div id="file-name">-</div>
+                                    <div class="progress-bar">
+                                        <div id="progress-fill" class="progress-fill"></div>
+                                    </div>
+                                    <div id="progress-text">0%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Panel -->
+            <div id="settings-screen" class="screen">
+                <div class="settings-container">
+                    <div class="settings-content">
+                        <h2>Settings</h2>
+
+                        <div class="settings-section">
+                            <h3>WebRTC Configuration</h3>
+                            <div class="setting-item">
+                                <label for="stun-servers">STUN Servers:</label>
+                                <textarea id="stun-servers" rows="3"></textarea>
+                            </div>
+                            <div class="setting-item">
+                                <label for="turn-server">TURN Server:</label>
+                                <input type="text" id="turn-server" placeholder="turn:server.com:3478">
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>General Settings</h3>
+                            <div class="setting-item">
+                                <label>
+                                    <input type="checkbox" id="auto-accept" checked>
+                                    Auto-accept connections
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label>
+                                    <input type="checkbox" id="sound-enabled" checked>
+                                    Enable notification sounds
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label for="display-name">Display Name:</label>
+                                <input type="text" id="display-name" placeholder="Your name">
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Display Settings</h3>
+                            <div class="setting-item">
+                                <label for="video-quality">Video Quality:</label>
+                                <select id="video-quality">
+                                    <option value="low">Low (360p)</option>
+                                    <option value="medium" selected>Medium (720p)</option>
+                                    <option value="high">High (1080p)</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label for="frame-rate">Frame Rate:</label>
+                                <select id="frame-rate">
+                                    <option value="15">15 FPS</option>
+                                    <option value="24">24 FPS</option>
+                                    <option value="30" selected>30 FPS</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="settings-actions">
+                            <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+                            <button class="btn btn-secondary" onclick="toggleSettings()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/webrtc.js"></script>
+    <script src="js/screenShare.js"></script>
+    <script src="js/remoteControl.js"></script>
+    <script src="js/fileTransfer.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+</html>
