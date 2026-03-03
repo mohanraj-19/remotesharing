@@ -105,7 +105,7 @@ io.on('connection', (socket) => {
 
   // Register user with unique ID
   socket.on('register-user', (data) => {
-    const { userID, displayName } = data;
+    const { userID, displayName } = data || {};
     
     if (!userID) {
       socket.emit('error', { message: 'User ID required' });
@@ -136,8 +136,13 @@ io.on('connection', (socket) => {
 
   // Request connection to another user
   socket.on('request-connection', (data) => {
-    const { targetUserID } = data;
-    const sourceUserID = socket.userID;
+    const { targetUserID, sourceUserID: requestSourceUserID } = data || {};
+    const sourceUserID = socket.userID || requestSourceUserID;
+
+    if (sourceUserID && !socket.userID) {
+      socket.userID = sourceUserID;
+      socket.join(`user-${sourceUserID}`);
+    }
 
     if (!sourceUserID || !targetUserID) {
       socket.emit('error', { message: 'Missing user IDs' });

@@ -7,6 +7,7 @@ let sessionID;
 let userID;
 let myConnectionID;
 let connectedUserID;
+let pendingTargetUserID;
 let connectionStartTime;
 let connectionTimer;
 
@@ -36,6 +37,10 @@ function initializeSocket() {
     console.log('Connected to server:', socket.id);
     updateStatusIndicator(true);
     showNotification('Connected to server', 'success');
+
+    if (myConnectionID) {
+      registerUser();
+    }
   });
 
   socket.on('disconnect', () => {
@@ -55,12 +60,54 @@ function initializeSocket() {
     console.log('Registration successful:', data);
     userID = data.userID;
     updateUserIDDisplay();
+
+    if (pendingTargetUserID) {
+      const queuedTarget = pendingTargetUserID;
+      pendingTargetUserID = null;
+      connectedUserID = queuedTarget;
+      socket.emit('request-connection', {
+        targetUserID: queuedTarget,
+        sourceUserID: userID
+      });
+      console.log('Queued connection request sent to:', queuedTarget);
+    }
   });
 
   // Connection request events
   socket.on('incoming-connection-request', (data) => {
     console.log('Incoming connection request:', data);
     handleIncomingRequest(data);
+  });
+
+  socket.on('webrtc-offer', (data) => {
+    console.log('WebRTC offer received from:', data.fromUserID);
+    connectedUserID = data.fromUserID;
+    handleWebRTCOffer(data.offer);
+  });
+
+  socket.on('webrtc-answer', (data) => {
+    console.log('WebRTC answer received from:', data.fromUserID);
+    connectedUserID = data.fromUserID;
+    handleWebRTCAnswer(data.answer);
+  });
+
+  socket.on('webrtc-ice-candidate', (data) => {
+    addICECandidate(data.candidate);
+  });
+
+  socket.on('remote-control-action', (data) => {
+    handleRemoteControlAction(data.action, data);
+  });
+
+  socket.on('file-transfer-request', handleFileTransferRequest);
+  socket.on('file-transfer-chunk', handleFileTransferChunk);
+  socket.on('file-transfer-complete', handleFileTransferComplete);
+  socket.on('chat-message', (data) => {
+    addChatMessage(data);
+
+    if (storage.get('soundEnabled', true)) {
+      playNotificationSound();
+    }
   });
 
   socket.on('connection-accepted', (data) => {
@@ -97,14 +144,17 @@ function initializeSocket() {
  */
 function registerUser() {
   if (!socket || !socket.connected) {
-    showNotification('Not connected to server', 'error');
+    return;
+  }
+
+  if (!myConnectionID) {
     return;
   }
 
   const displayName = storage.get('displayName', 'Anonymous');
   
   socket.emit('register-user', {
-    userID: userID,
+    userID: myConnectionID,
     displayName: displayName
   });
 }
@@ -175,6 +225,7 @@ async function generateNewID() {
     
     if (data.success) {
       myConnectionID = data.connectionID;
+      userID = myConnectionID;
       sessionID = data.sessionID;
       updateUserIDDisplay();
       showNotification('New ID generated', 'success');
@@ -209,10 +260,18 @@ function connectToUser() {
     showNotification('Not connected to server', 'error');
     return;
   }
+
+  if (!userID) {
+    pendingTargetUserID = targetID;
+    registerUser();
+    showNotification('Registering your ID, please wait...', 'info');
+    return;
+  }
   
   connectedUserID = targetID;
   socket.emit('request-connection', {
-    targetUserID: targetID
+    targetUserID: targetID,
+    sourceUserID: userID
   });
   
   console.log('Connection request sent to:', targetID);
@@ -222,6 +281,7 @@ function connectToUser() {
  * Handle incoming connection request
  */
 function handleIncomingRequest(data) {
+  connectedUserID = data.fromUserID;
   const autoAccept = storage.get('autoAccept', false);
   
   if (autoAccept) {
@@ -255,6 +315,11 @@ function acceptConnection() {
     showNotification('Not connected to server', 'error');
     return;
   }
+
+  if (!connectedUserID) {
+    showNotification('Missing requester ID. Ask them to reconnect.', 'error');
+    return;
+  }
   
   socket.emit('accept-connection', {
     fromUserID: connectedUserID
@@ -273,6 +338,11 @@ function acceptConnection() {
 function rejectConnection() {
   if (!socket || !socket.connected) {
     showNotification('Not connected to server', 'error');
+    return;
+  }
+
+  if (!connectedUserID) {
+    showNotification('Missing requester ID. Ask them to reconnect.', 'error');
     return;
   }
   
@@ -457,6 +527,7 @@ async function initializeApp() {
   if (!myConnectionID) {
     await generateNewID();
   } else {
+    userID = myConnectionID;
     updateUserIDDisplay();
     sessionID = storage.get('sessionID');
     registerUser();
